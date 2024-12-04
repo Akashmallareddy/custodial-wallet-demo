@@ -26,18 +26,6 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        // const chainConfig = {
-        //   chainId: "0x1", // Please use 0x1 for Mainnet
-        //   rpcTarget: "https://rpc.ankr.com/eth",
-        //   chainNamespace: CHAIN_NAMESPACES.EIP155,
-        //   displayName: "Ethereum Mainnet",
-        //   blockExplorerUrl: "https://etherscan.io/",
-        //   ticker: "ETH",
-        //   tickerName: "Ethereum",
-        //   logo: "https://images.toruswallet.io/eth.svg",
-        // };
-
-        // const privateKeyProvider = new EthereumPrivateKeyProvider({ config: { chainConfig: chainConfig } });
 
         const chainConfig = {
           chainNamespace: CHAIN_NAMESPACES.OTHER,
@@ -329,6 +317,16 @@ function App() {
     uiConsole("Transaction ID: ", result);
   };
 
+  const signAndSendOptinTxn = async () => {
+    if (!provider) {
+      uiConsole("provider not initialized yet");
+      return;
+    }
+    const rpc = new RPC(provider);
+    const result = await rpc.signAndSendOptinTxn();
+    uiConsole("Transaction ID: ", result);
+  }
+
   function uiConsole(...args: any[]): void {
     const el = document.querySelector("#console>p");
     if (el) {
@@ -367,6 +365,11 @@ function App() {
         <div>
           <button onClick={signAndSendTransaction} className="card">
             Send Transaction
+          </button>
+        </div>
+        <div>
+          <button onClick={signAndSendOptinTxn} className="card">
+            Send OptIn Transaction
           </button>
         </div>
         <div>

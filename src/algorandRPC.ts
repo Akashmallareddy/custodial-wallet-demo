@@ -132,4 +132,33 @@ export default class AlgorandRPC {
       console.log(error);
     }
   };
+
+  signAndSendOptinTxn = async (): Promise<any> => {
+    try {
+      const keyPair = await this.getAlgorandKeyPair();
+      const client = await this.makeClient();
+      const params = await client.getTransactionParams().do();
+      const enc = new TextEncoder();
+      const message = enc.encode("Web3Auth says hello!");
+
+      // You need to have some funds in your account to send a transaction
+      // You can get some testnet funds here: https://bank.testnet.algorand.network/
+
+      const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+        sender:keyPair.addr, // sender
+        receiver:keyPair.addr, // receiver
+        assetIndex:628958865,
+        amount:0,
+        note:message,
+        suggestedParams:params
+    });
+      let signedTxn = algosdk.signTransaction(txn, keyPair.sk);
+
+      const txHash = await client.sendRawTransaction(signedTxn.blob).do();
+
+      return txn.txID();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
